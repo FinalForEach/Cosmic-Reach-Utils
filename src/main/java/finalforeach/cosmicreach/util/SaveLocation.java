@@ -36,7 +36,9 @@ public final class SaveLocation
 			// Fixes a windows-specific bug with the JDK
 			if(OSInfo.isWindows) 
 			{
-				Runtime.getRuntime().exec("explorer.exe \"" + folder.getAbsolutePath() + "\"");
+				//Runtime.getRuntime().exec("explorer.exe \"" + folder.getAbsolutePath() + "\"");
+				// TODO: Check if this works, if not, uncomment the above and ignore the deprecation warning
+				Runtime.getRuntime().exec(new String[] { "explorer.exe", folder.getAbsolutePath() });
 				return;
 			}
 			throw ex;
