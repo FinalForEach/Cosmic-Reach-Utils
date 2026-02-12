@@ -29,7 +29,15 @@ public class GameAssetLoaderUtils
 		namespaces.add("base");
 		String modAssetFolder = SaveLocation.getSaveFolderLocation() + "/mods/";
 		File modAssetRoot = new File(modAssetFolder);
+		if(!modAssetRoot.exists()) 
+		{
+			return namespaces;
+		}
 		File[] l = modAssetRoot.listFiles();
+		if(l == null) 
+		{
+			return namespaces;
+		}
 		for (var f : l)
 		{
 			if (f.isDirectory() && !f.getName().contains(":"))
