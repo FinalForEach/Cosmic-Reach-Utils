@@ -10,6 +10,7 @@ import java.util.function.Function;
 public class GameAssetLoaderUtils
 {
 	public static final ArrayList<String> defaultAssetList = new ArrayList<>();
+	public static final ArrayList<String> defaultNamespaceList = new ArrayList<>();
 
 	public static <ASSET_TYPE, FILEHANDLE> ASSET_TYPE get(FILEHANDLE assetFile, HashMap<FILEHANDLE, ASSET_TYPE> map,
 			Function<FILEHANDLE, ASSET_TYPE> instantiator)
@@ -26,7 +27,7 @@ public class GameAssetLoaderUtils
 	public static Set<String> getAllNamespaces()
 	{
 		Set<String> namespaces = new HashSet<String>();
-		namespaces.add("base");
+        namespaces.addAll(defaultNamespaceList);
 		String modAssetFolder = SaveLocation.getSaveFolderLocation() + "/mods/";
 		File modAssetRoot = new File(modAssetFolder);
 		if(!modAssetRoot.exists()) 
@@ -38,6 +39,7 @@ public class GameAssetLoaderUtils
 		{
 			return namespaces;
 		}
+
 		for (var f : l)
 		{
 			if (f.isDirectory() && !f.getName().contains(":"))
@@ -57,5 +59,39 @@ public class GameAssetLoaderUtils
 				defaultAssetList.add(line);	
 			}
 		}
+	}
+
+	public static void addAssetList(ArrayList<String> lines)
+	{
+		addAssetList(lines.toArray(String[]::new));
+	}
+
+	public static void addNamespaceList(String[] lines)
+	{
+		for(String line : lines)
+		{
+			addNamespace(line);
+		}
+	}
+
+	public static void addNamespaceList(ArrayList<String> lines)
+	{
+		for(String line : lines)
+		{
+			addNamespace(line);
+		}
+	}
+
+	public static void addNamespace(String namespace)
+	{
+		if(!defaultNamespaceList.contains(namespace))
+		{
+			defaultNamespaceList.add(namespace);
+		}
+	}
+
+	static
+	{
+		defaultNamespaceList.add("base");
 	}
 }
