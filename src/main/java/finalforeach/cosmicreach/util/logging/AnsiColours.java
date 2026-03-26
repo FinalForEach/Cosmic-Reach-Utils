@@ -40,10 +40,14 @@ public enum AnsiColours
 	BRIGHT_BG_WHITE("\u001B[107m");
 
 	final String code;
+	final boolean isBright;
+	final boolean isBackground;
 
 	AnsiColours(String code) 
 	{
 		this.code = code;
+		isBright = name().startsWith("BRIGHT_");
+		isBackground = name().contains("BG");
 	}
 
 	public String getCode() 
@@ -106,12 +110,12 @@ public enum AnsiColours
 
 	public boolean isBright()
 	{
-		return name().startsWith("BRIGHT_");
+		return isBright;
 	}
 
 	public boolean isBackground()
 	{
-		return name().contains("BG");
+		return isBackground;
 	}
 
 	public static String stripAnsiCodes(String input) 
