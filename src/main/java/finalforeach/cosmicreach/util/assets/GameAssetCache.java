@@ -1,4 +1,4 @@
-package finalforeach.cosmicreach.util;
+package finalforeach.cosmicreach.util.assets;
 
 import java.util.HashMap;
 import java.util.function.Function;

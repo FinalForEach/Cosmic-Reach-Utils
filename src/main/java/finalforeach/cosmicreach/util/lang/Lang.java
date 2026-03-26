@@ -1,4 +1,4 @@
-package finalforeach.cosmicreach.lang;
+package finalforeach.cosmicreach.util.lang;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -10,8 +10,8 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectSet;
 
-import finalforeach.cosmicreach.util.GameAssetLoader;
-import finalforeach.cosmicreach.util.GameAssetLoaderUtils;
+import finalforeach.cosmicreach.util.assets.GameAssetLoader;
+import finalforeach.cosmicreach.util.assets.GameAssetLoaderUtils;
 import finalforeach.cosmicreach.util.logging.Logger;
 import finalforeach.cosmicreach.util.settings.Preferences;
 

@@ -1,4 +1,4 @@
-package finalforeach.cosmicreach.util;
+package finalforeach.cosmicreach.util.assets;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
+import finalforeach.cosmicreach.util.Identifier;
+import finalforeach.cosmicreach.util.SaveLocation;
 import finalforeach.cosmicreach.util.logging.AnsiColours;
 import finalforeach.cosmicreach.util.logging.Logger;
 

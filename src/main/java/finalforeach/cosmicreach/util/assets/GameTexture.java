@@ -1,12 +1,10 @@
-package finalforeach.cosmicreach.util.rendering;
+package finalforeach.cosmicreach.util.assets;
 
 import java.util.HashMap;
 import java.util.Objects;
 
 import com.badlogic.gdx.graphics.Texture;
 
-import finalforeach.cosmicreach.util.GameAssetCache;
-import finalforeach.cosmicreach.util.GameAssetLoader;
 import finalforeach.cosmicreach.util.GameProperties;
 import finalforeach.cosmicreach.util.Identifier;
 import finalforeach.cosmicreach.util.Threads;

@@ -1,4 +1,4 @@
-package finalforeach.cosmicreach.util;
+package finalforeach.cosmicreach.util.constants;
 
 public enum Orientation2D
 {

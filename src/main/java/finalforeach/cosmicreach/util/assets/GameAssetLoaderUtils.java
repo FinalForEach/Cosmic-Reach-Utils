@@ -1,4 +1,4 @@
-package finalforeach.cosmicreach.util;
+package finalforeach.cosmicreach.util.assets;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
+
+import finalforeach.cosmicreach.util.SaveLocation;
 
 public class GameAssetLoaderUtils
 {
