@@ -17,6 +17,10 @@ public class GameTexture
 			f -> new Texture(f));
 	Identifier id;
 	Texture texture;
+
+	// FIXME: I don't like these here, but it'll do for now instead of over-engineering metadata
+	public float animationFrameDuration;
+	public int animationFrameCount;
 	
 	public GameTexture(Identifier id)
 	{
@@ -38,7 +42,6 @@ public class GameTexture
 		this.texture = texture;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static GameTexture load(String fileName) 
 	{
 		final var id = Identifier.of(fileName);
