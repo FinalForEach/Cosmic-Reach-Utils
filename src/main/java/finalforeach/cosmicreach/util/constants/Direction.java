@@ -145,4 +145,28 @@ public enum Direction
 		return vec3;
 	}
 
+	public Direction getLeft()
+	{
+		return switch (this)
+		{
+			case NEG_Z -> Direction.NEG_X;
+			case POS_Z -> Direction.POS_X;
+			case NEG_X -> Direction.POS_Z;
+			case POS_X -> Direction.NEG_Z;
+			default -> null;
+		};
+	}
+
+	public Direction getRight()
+	{
+		return switch (this)
+		{
+			case NEG_Z -> Direction.POS_X;
+			case POS_Z -> Direction.NEG_X;
+			case NEG_X -> Direction.NEG_Z;
+			case POS_X -> Direction.POS_Z;
+			default -> null;
+		};
+	}
+
 }
