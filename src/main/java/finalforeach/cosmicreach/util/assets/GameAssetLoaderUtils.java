@@ -2,8 +2,8 @@ package finalforeach.cosmicreach.util.assets;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -14,16 +14,10 @@ public class GameAssetLoaderUtils
 	public static final ArrayList<String> defaultAssetList = new ArrayList<>();
 	public static final ArrayList<String> defaultNamespaceList = new ArrayList<>();
 
-	public static <ASSET_TYPE, FILEHANDLE> ASSET_TYPE get(FILEHANDLE assetFile, HashMap<FILEHANDLE, ASSET_TYPE> map,
+	public static <ASSET_TYPE, FILEHANDLE> ASSET_TYPE get(FILEHANDLE assetFile, Map<FILEHANDLE, ASSET_TYPE> map,
 			Function<FILEHANDLE, ASSET_TYPE> instantiator)
 	{
-		if (map.containsKey(assetFile))
-		{
-			return map.get(assetFile);
-		}
-		ASSET_TYPE asset = instantiator.apply(assetFile);
-		map.put(assetFile, asset);
-		return asset;
+		return map.computeIfAbsent(assetFile, k -> instantiator.apply(k));
 	}
 
 	public static Set<String> getAllNamespaces()

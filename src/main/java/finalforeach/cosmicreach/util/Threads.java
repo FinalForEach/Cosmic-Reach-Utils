@@ -1,5 +1,7 @@
 package finalforeach.cosmicreach.util;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import com.badlogic.gdx.Gdx;
@@ -11,6 +13,13 @@ public class Threads
 	public static final Array<PauseableThread> allPauseableThreads = new Array<>();
 	private static Consumer<Runnable> mainThreadRunner = task -> Gdx.app.postRunnable(task);
 	private static Thread mainThread;
+
+	private static final ExecutorService BACKGROUND_POOL = Executors
+			.newFixedThreadPool(Math.max(1, Runtime.getRuntime().availableProcessors() - 1), runnable -> {
+				Thread thread = new Thread(runnable, "BackgroundAssetLoadingThread");
+				thread.setDaemon(true);
+				return thread;
+			});
 
 	public static void runOnMainThread(Runnable runnable)
 	{
@@ -26,6 +35,11 @@ public class Threads
 	public static boolean isOnMainThread()
 	{
 		return Thread.currentThread() == mainThread;
+	}
+
+	public static void runInBackground(Runnable runnable)
+	{
+		BACKGROUND_POOL.submit(runnable);
 	}
 
 	public static Thread createThread(String name, Runnable runnable)
@@ -76,8 +90,8 @@ public class Threads
 	{
 		mainThread = Thread.currentThread();
 	}
-	
-	public static void setMainThreadRunner(Consumer<Runnable> runner) 
+
+	public static void setMainThreadRunner(Consumer<Runnable> runner)
 	{
 		mainThreadRunner = runner;
 	}
