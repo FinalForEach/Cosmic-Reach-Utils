@@ -232,6 +232,11 @@ public final class GameMath
 
 	public static float distanceSegmentPoint(Segment segment, float pointX, float pointY, float pointZ)
 	{
+		return (float) Math.sqrt(distanceSegmentPointSq(segment, pointX, pointY, pointZ));
+	}
+
+	public static float distanceSegmentPointSq(Segment segment, float pointX, float pointY, float pointZ)
+	{
 		final var a = segment.a;
 		final var b = segment.b;
 		float originToPointX = pointX - a.x;
@@ -255,7 +260,28 @@ public final class GameMath
 		float projectedY = a.y + projectionScalar * dirY;
 		float projectedZ = a.z + projectionScalar * dirZ;
 
-		return Vector3.dst(pointX, pointY, pointZ, projectedX, projectedY, projectedZ);
+		return Vector3.dst2(pointX, pointY, pointZ, projectedX, projectedY, projectedZ);
+	}
+
+	public static float distanceSegmentPointSq(Vector3 a, Vector3 b, float pointX, float pointY, float pointZ)
+	{
+		float originToPointX = pointX - a.x;
+		float originToPointY = pointY - a.y;
+		float originToPointZ = pointZ - a.z;
+
+		float dirX = b.x - a.x;
+		float dirY = b.y - a.y;
+		float dirZ = b.z - a.z;
+
+		float ab_dot_ab = dirX * dirX + dirY * dirY + dirZ * dirZ;
+		float projectionScalar = (originToPointX * dirX + originToPointY * dirY + originToPointZ * dirZ) / ab_dot_ab;
+		projectionScalar = MathUtils.clamp(projectionScalar, 0, 1);
+
+		float projectedX = a.x + projectionScalar * dirX;
+		float projectedY = a.y + projectionScalar * dirY;
+		float projectedZ = a.z + projectionScalar * dirZ;
+
+		return Vector3.dst2(pointX, pointY, pointZ, projectedX, projectedY, projectedZ);
 	}
 
 	public static float norDot(Vector3 a, Vector3 b)
@@ -366,8 +392,10 @@ public final class GameMath
 	public static float bilinearNormalized(float valueX1Y1, float valueX2Y1, float valueX1Y2, float valueX2Y2, float u,
 			float v)
 	{
-		// u and v are in [0,1], representing the relative position in the cell
-		return bilinear(valueX1Y1, valueX2Y1, valueX1Y2, valueX2Y2, 0, 1, 0, 1, u, v);
+		float oneMinusU = 1f - u;
+		float interpY1 = oneMinusU * valueX1Y1 + u * valueX2Y1;
+		float interpY2 = oneMinusU * valueX1Y2 + u * valueX2Y2;
+		return (1f - v) * interpY1 + v * interpY2;
 	}
 
 	public static float cosineLerp(float a, float b, float t)
@@ -393,8 +421,9 @@ public final class GameMath
 	public static float cosineBilinearNormalized(float valueX1Y1, float valueX2Y1, float valueX1Y2, float valueX2Y2,
 			float u, float v)
 	{
-		// u and v are in [0,1], representing the relative position in the cell
-		return cosineBilinear(valueX1Y1, valueX2Y1, valueX1Y2, valueX2Y2, 0, 1, 0, 1, u, v);
+		float interpY1 = cosineLerp(valueX1Y1, valueX2Y1, u);
+		float interpY2 = cosineLerp(valueX1Y2, valueX2Y2, u);
+		return cosineLerp(interpY1, interpY2, v);
 	}
 
 	public static void getRandomPointOnBoundingBox(BoundingBox bb, Vector3 outVec)
