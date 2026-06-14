@@ -3,10 +3,29 @@ package finalforeach.cosmicreach.util.logging;
 public class Logger
 {
 	private static LoggerInstance DEFAULT_LOGGER = new LoggerInstance();
+	private static String version;
+
+	public static void setVersion(String version)
+	{
+		Logger.version = version;
+		if (DEFAULT_LOGGER != null)
+		{
+			DEFAULT_LOGGER.setVersion(version);
+		}
+	}
+
+	public static String getVersion()
+	{
+		return version;
+	}
 
 	public static void setDefaultLogger(LoggerInstance loggerInstance)
 	{
 		DEFAULT_LOGGER = loggerInstance;
+		if (DEFAULT_LOGGER != null)
+		{
+			DEFAULT_LOGGER.setVersion(version);
+		}
 	}
 
 	public static LoggerInstance getDefaultLogger()

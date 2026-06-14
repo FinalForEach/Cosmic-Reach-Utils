@@ -11,6 +11,41 @@ public class LoggerInstance
 	public DateTimeFormatter formatter = defaultFormatter;
 	public boolean debug = true;
 	public LoggerLevel loggerLevel = LoggerLevel.DEBUG;
+	private String version;
+	private final String[] levelPrefixes = new String[LoggerLevel.values().length];
+
+	{
+		updatePrefixes();
+	}
+
+	public void setVersion(String version)
+	{
+		synchronized (strBuilder)
+		{
+			this.version = version;
+			updatePrefixes();
+		}
+	}
+
+	public String getVersion()
+	{
+		return version;
+	}
+
+	private void updatePrefixes()
+	{
+		for (LoggerLevel level : LoggerLevel.values())
+		{
+			if (version != null && !version.isEmpty())
+			{
+				levelPrefixes[level.ordinal()] = "[" + version + "|" + level.name() + "] ";
+			}
+			else
+			{
+				levelPrefixes[level.ordinal()] = level.messagePrefix;
+			}
+		}
+	}
 
 	public void log(PrintStream printStream, LoggerLevel level, String message)
 	{
@@ -19,7 +54,7 @@ public class LoggerInstance
 		synchronized (strBuilder)
 		{
 			strBuilder.setLength(0);
-			strBuilder.append(level.messagePrefix);
+			strBuilder.append(levelPrefixes[level.ordinal()]);
 			strBuilder.append(LocalDateTime.now().format(formatter));
 			strBuilder.append(message);
 			fullMessage = strBuilder.toString();
