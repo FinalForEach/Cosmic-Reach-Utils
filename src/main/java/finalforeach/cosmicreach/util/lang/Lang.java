@@ -45,35 +45,41 @@ public class Lang implements Json.Serializable
 	{
 		Json json = new Json();
 		String chosenLangTag = Preferences.chosenLang.getValue();
-		String prefix = "lang";
-		if (!loadAll && chosenLangTag != null)
-		{
-			prefix = "lang/" + chosenLangTag;
-		}
-
-		ObjectSet<String> langFolders = new ObjectSet<String>();
-
-		Logger.info("Finding languages...");
-
-		String start = "base:lang/";
-		String end = "/game.json";
-		GameAssetLoader.forEachAsset(prefix, ".json", (p, _) -> {
-			if (!p.startsWith(start) || !p.endsWith(end))
-			{
-				return;
-			}
-			if (!loadedLangFolders.contains(p))
-			{
-				langFolders.add(p);
-				loadedLangFolders.add(p);
-			}
-		});
 
 		Logger.info("Loading language files...");
-		for (String langPath : langFolders)
+		if (loadAll)
 		{
-			String langTag = langPath.replace(start, "").replace(end, "");
-			loadLang(json, langTag, langPath.replace(end, ""), GameAssetLoader.loadAsset(langPath));
+			ObjectSet<String> langFolders = new ObjectSet<String>();
+			String start = "base:lang/";
+			String end = "/game.json";
+			GameAssetLoader.forEachAsset("lang", ".json", (p, _) -> {
+				if (!p.startsWith(start) || !p.endsWith(end))
+				{
+					return;
+				}
+				if (!loadedLangFolders.contains(p))
+				{
+					langFolders.add(p);
+				}
+			});
+
+			for (String langPath : langFolders)
+			{
+				String langTag = langPath.replace(start, "").replace(end, "");
+				loadLangByTag(json, langTag);
+			}
+		} else
+		{
+			loadLangByTag(json, defaultLangTag);
+			if (chosenLangTag != null)
+			{
+				loadLangByTag(json, chosenLangTag);
+			}
+		}
+
+		if (currentLang == null)
+		{
+			currentLang = gameDefaultLang;
 		}
 
 		Logger.info("Calculating language fallbacks...");
@@ -85,7 +91,46 @@ public class Lang implements Json.Serializable
 		languages.sort((a, b) -> a.langTag.compareTo(b.langTag));
 	}
 
-	private static void loadLang(Json json, String langTag, String langPath, FileHandle langGameFile)
+	private static Lang loadLangByTag(Json json, String langTag)
+	{
+		if (langTag == null || langTag.isEmpty())
+		{
+			return null;
+		}
+
+		Lang existing = getLangByTag(langTag);
+		if (existing != null)
+		{
+			return existing;
+		}
+
+		String langPath = "base:lang/" + langTag + "/game.json";
+		if (loadedLangFolders.contains(langPath))
+		{
+			return getLangByTag(langTag);
+		}
+
+		FileHandle langGameFile = GameAssetLoader.loadAsset(langPath, false);
+		if (langGameFile == null || !langGameFile.exists())
+		{
+			return null;
+		}
+
+		loadedLangFolders.add(langPath);
+		Lang lang = loadLang(json, langTag, langPath.replace("/game.json", ""), langGameFile);
+
+		if (lang != null && lang.fallbackTags != null)
+		{
+			for (String f : lang.fallbackTags)
+			{
+				loadLangByTag(json, f);
+			}
+		}
+
+		return lang;
+	}
+
+	private static Lang loadLang(Json json, String langTag, String langPath, FileHandle langGameFile)
 	{
 		Lang lang = json.fromJson(Lang.class, langGameFile);
 		lang.langTag = langTag;
@@ -116,6 +161,8 @@ public class Lang implements Json.Serializable
 				}
 			}, true);
 		}
+
+		return lang;
 	}
 
 	private void calculateFallbacks(ObjectSet<Lang> calculatingSet)
