@@ -2,6 +2,7 @@ package finalforeach.cosmicreach.util.lang;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -45,6 +46,10 @@ public class Lang implements Json.Serializable
 	{
 		Json json = new Json();
 		String chosenLangTag = Preferences.chosenLang.getValue();
+		if (chosenLangTag == null)
+		{
+			chosenLangTag = getSystemLangTag();
+		}
 
 		Logger.info("Loading language files...");
 		if (loadAll)
@@ -77,6 +82,15 @@ public class Lang implements Json.Serializable
 			}
 		}
 
+		if (chosenLangTag != null)
+		{
+			Lang lang = getLangByTag(chosenLangTag);
+			if (lang != null)
+			{
+				currentLang = lang;
+			}
+		}
+
 		if (currentLang == null)
 		{
 			currentLang = gameDefaultLang;
@@ -89,6 +103,14 @@ public class Lang implements Json.Serializable
 		}
 
 		languages.sort((a, b) -> a.langTag.compareTo(b.langTag));
+	}
+
+	public static String getSystemLangTag()
+	{
+		String sysTag = Locale.getDefault().toString().toLowerCase();
+		Logger.info("Choosing system locale: " + sysTag);
+		FileHandle handle = GameAssetLoader.loadAsset("base:lang/" + sysTag + "/game.json", false);
+		return (handle != null && handle.exists()) ? sysTag : null;
 	}
 
 	private static Lang loadLangByTag(Json json, String langTag)
