@@ -11,8 +11,9 @@ public enum Direction
 	public static final Direction[] ALL_DIRECTIONS = Direction.values();
 	public static final Direction[] ALL_POS_AXIS = new Direction[] { POS_X, POS_Y, POS_Z };
 	public static final Direction[] VERT_AXIS = new Direction[] { NEG_Y, POS_Y };
+	public static final Direction[] CARDINAL_DIRECTIONS = new Direction[] { POS_X, NEG_X, POS_Z, NEG_Z };
 
-	private int xOff, yOff, zOff;
+	private final int xOff, yOff, zOff;
 	private Direction[] allExceptThis;
 	private Direction[] allExceptOpposite;
 	private Direction[] justThis = new Direction[] { this };
