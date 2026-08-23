@@ -17,6 +17,10 @@ public class GameAssetLoaderUtils
 	public static <ASSET_TYPE, FILEHANDLE> ASSET_TYPE get(FILEHANDLE assetFile, Map<FILEHANDLE, ASSET_TYPE> map,
 			Function<FILEHANDLE, ASSET_TYPE> instantiator)
 	{
+		if (assetFile == null)
+		{
+			return null;
+		}
 		return map.computeIfAbsent(assetFile, k -> instantiator.apply(k));
 	}
 

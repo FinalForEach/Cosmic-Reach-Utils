@@ -42,25 +42,40 @@ public class GameTexture
 		this.texture = texture;
 	}
 
-	public static GameTexture load(String fileName) 
+	public static final Identifier FALLBACK_ID = Identifier.of("base:textures/blocks/debug.png");
+
+	public static GameTexture load(Identifier id)
 	{
-		final var id = Identifier.of(fileName);
-		
-		final var cachedTex = MAP.get(id);
-		if(cachedTex != null) 
+		final var targetId = id == null ? FALLBACK_ID : id;
+
+		final var cachedTex = MAP.get(targetId);
+		if (cachedTex != null)
 		{
 			return cachedTex;
 		}
-		
-		final var tex = new GameTexture(id);
-		if(GameProperties.isClient) 
+
+		final var tex = new GameTexture(targetId);
+		if (GameProperties.isClient)
 		{
 			Threads.runOnMainThread(() -> {
-				tex.texture = GameAssetLoader.getAssetOfType(TEXTURE_CACHE, id);
+				tex.texture = GameAssetLoader.getAssetOfType(TEXTURE_CACHE, targetId);
+				if (tex.texture == null && !FALLBACK_ID.equals(targetId))
+				{
+					tex.texture = GameAssetLoader.getAssetOfType(TEXTURE_CACHE, FALLBACK_ID);
+				}
 			});
 		}
-		MAP.put(id, tex);
+		MAP.put(targetId, tex);
 		return tex;
+	}
+
+	public static GameTexture load(String fileName)
+	{
+		if (fileName == null)
+		{
+			return load(FALLBACK_ID);
+		}
+		return load(Identifier.of(fileName));
 	}
 	
 	public Identifier getID() {
